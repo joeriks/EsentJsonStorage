@@ -50,6 +50,9 @@ build/
 [Bb]in/
 [Oo]bj/
 
+packages/
+FnX.SignalrDataSelfHost/
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
