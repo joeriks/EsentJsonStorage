@@ -66,9 +66,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FnX.EsentJsonStorage\FnX.EsentJsonStorage.csproj">
+    <ProjectReference Include="..\FnX.EsentJsonStorage\EsentJsonStorage.csproj">
       <Project>{c050827a-0126-4caf-9aa6-ac3b34702069}</Project>
-      <Name>FnX.EsentJsonStorage</Name>
+      <Name>EsentJsonStorage</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

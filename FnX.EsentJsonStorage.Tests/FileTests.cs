@@ -1,8 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using EsentJsonStorage;
 
-namespace FnX.EsentObjectTests
+namespace EsentJsonStorage.Tests
 {
     [TestClass]
     public class FileTests
@@ -10,7 +11,7 @@ namespace FnX.EsentObjectTests
         [TestMethod]
         public void ExportImportTest()
         {
-            var p = EsentJsonStorage.GetDictionary();
+            var p = Storage.GetDictionary();
 
             p.Clear();
             p.Add("foo", "bar");
@@ -44,7 +45,7 @@ namespace FnX.EsentObjectTests
             var item1 = new SomeType { Id = "1", Value = "A", Values = new List<string> { "aaa", "bbb", "ccc" } };
             var item2 = new SomeType { Id = "2", Value = "B", Values = new List<string> { "ddd", "eee", "fff" } };
 
-            var store = EsentJsonStorage.GetStore();
+            var store = Storage.GetStore();
 
             store.Dictionary.Clear();
             store.Set(item1);

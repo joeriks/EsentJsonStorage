@@ -9,19 +9,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using FnX;
-namespace FnX
+
+namespace EsentJsonStorage
 {
-
-    public class EsentJsonStorage
+    public static class Storage
     {
-
-        public static EsentJsonStore GetStore(string physicalName = "", EsentJsonStore.StoreOptions options = null)
+        public static Store GetStore(string physicalName = "", Store.StoreOptions options = null)
         {
             if (physicalName == "") physicalName = "default";
             return GetDictionary(physicalName).GetStore(options);
         }
-        public static ConcurrentDictionary<string, PersistentDictionary<string, string>> _dictionaries = new ConcurrentDictionary<string, PersistentDictionary<string, string>>();
         public static PersistentDictionary<string, string> GetDictionary(string physicalName = "default")
         {
 
@@ -36,7 +33,7 @@ namespace FnX
             return existingOrNew(path);
 
         }
-
+        private static ConcurrentDictionary<string, PersistentDictionary<string, string>> _dictionaries = new ConcurrentDictionary<string, PersistentDictionary<string, string>>();
         private static PersistentDictionary<string, string> existingOrNew(string path, int retry = 0)
         {
             lock (_dictionaries)
@@ -49,4 +46,3 @@ namespace FnX
         }
     }
 }
-

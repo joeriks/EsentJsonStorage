@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FnX
+namespace EsentJsonStorage
 {
-    public class EsentJsonStore : IDisposable
+    public class Store : IDisposable
     {
         public PersistentDictionary<string, string> Dictionary { get; set; }
 
@@ -17,7 +17,7 @@ namespace FnX
         {
             public bool WithRevisions { get; set; }
             public bool WithTimeStamps { get; set; }
-            
+
             public string DeserializeIdTo { get; set; }
             public string DeserializeUpdateTo { get; set; }
 
@@ -32,7 +32,7 @@ namespace FnX
         public StoreOptions Options { get; set; }
 
         public PersistentDictionary<string, string> KeysDictionary { get; set; }
-        public EsentJsonStore(PersistentDictionary<string, string> dictionary, StoreOptions options)
+        public Store(PersistentDictionary<string, string> dictionary, StoreOptions options)
         {
             Dictionary = dictionary;
             if (options == null) options = new StoreOptions();
@@ -121,11 +121,22 @@ namespace FnX
                 var json = Stamp(jsonValue, id);
                 if (id == "") id = json["_id"].ToString();
 
-                if (Options.WithRevisions && Dictionary.ContainsKey(id))
+                if (Options.WithRevisions)
                 {
-                    var revision = 1;
-                    while (Dictionary.ContainsKey(id + "-" + revision)) revision += 1;
-                    Dictionary[id + "-" + revision] = Get(id);
+                    if (Dictionary.ContainsKey(id))
+                    {
+                        int revision = 1;
+                        var existingItem = JObject.Parse(Get(id));
+                        var rev = (existingItem["_rev"] == null) ? "" : existingItem["_rev"].ToString();
+                        int.TryParse(rev, out revision);
+
+                        Dictionary[id + "-" + revision] = existingItem.ToString();                        
+                        json["_rev"] = revision+1;
+                    }
+                    else
+                    {
+                        //json["_rev"] = 1;
+                    }
                 }
                 Dictionary[id] = json.ToString();
             }
@@ -159,17 +170,24 @@ namespace FnX
             }
         }
 
-
-        public object GetAll()
+        public string GetAll(bool excludeSystemProperties = false)
         {
-            throw new NotImplementedException();
-        }
+            if (excludeSystemProperties)
+                return "[" + String.Join(",", Dictionary.Where(t => !t.Key.Contains("-")).Select(t => {
+                    var jObject = JObject.Parse(t.Value);
+                    if (jObject["_val"] != null) return jObject["_val"].ToString();
 
-        public string All()
-        {
-            return "[" + String.Join(",",Dictionary.Where(t => !t.Key.Contains("-")).Select(t=>t.Value)) + "]";
+                    jObject.Remove("_id");
+                    jObject.Remove("_date");
+                    jObject.Remove("_rev");
+
+                    return jObject.ToString();
+                
+                })) + "]";
+            else
+                return "[" + String.Join(",", Dictionary.Where(t => !t.Key.Contains("-")).Select(t => t.Value)) + "]";
         }
-        public Dictionary<string, T> All<T>()
+        public Dictionary<string, T> GetAll<T>()
         {
             return Dictionary.Where(t => !t.Key.Contains("-")).ToDictionary(t => t.Key, t => Deserialize<T>(t.Value));
         }

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Json over ManagedEsent")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("joeriks")]
-[assembly: AssemblyProduct("FnX.EsentObject")]
+[assembly: AssemblyProduct("EsentJsonStorage")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

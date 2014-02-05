@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FnX
+namespace EsentJsonStorage
 {
     public static class PersistentDictionaryExtensions
     {
-        public static EsentJsonStore GetStore(this PersistentDictionary<string, string> self, EsentJsonStore.StoreOptions options)
+        public static Store GetStore(this PersistentDictionary<string, string> self, Store.StoreOptions options)
         {
-            return new EsentJsonStore(self, options);
+            return new Store(self, options);
         }
         public static void Export(this PersistentDictionary<string, string> self, string path)
         {
