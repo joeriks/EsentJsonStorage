@@ -88,12 +88,12 @@ namespace EsentJsonStorage.Tests
 
             var p = s.GetAll();
 
-            var x = JArray.Parse(p);            
+            var x = JArray.Parse(p);
             Assert.AreEqual(3, x.Count);
             Assert.AreEqual("Foo", x[1]["Name"].ToString());
 
         }
-        
+
         [TestMethod]
         public void GetAll_NotRevisions()
         {
@@ -116,11 +116,11 @@ namespace EsentJsonStorage.Tests
                 Assert.AreEqual("Updated", p[person.Id].Name);
                 Assert.AreEqual(3, p.Count());
 
-            } 
+            }
 
-            
+
 
         }
-    
+
     }
 }

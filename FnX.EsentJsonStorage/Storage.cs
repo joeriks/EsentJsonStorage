@@ -22,13 +22,14 @@ namespace EsentJsonStorage
         public static PersistentDictionary<string, string> GetDictionary(string physicalName = "default")
         {
 
-            var path = Path.Combine(Environment.CurrentDirectory, @"..\App_Data\" + physicalName);
-            System.IO.Directory.CreateDirectory(path);
-
-            //if (HttpContext.Current != null)
-            //    path = HttpContext.Current.Server.MapPath("/App_Data/" + physicalName);
-            //else
-            //    path = System.IO.Path.GetTempPath() + "/EsentObject/" + physicalName;
+            var path = "";
+            if (HttpContext.Current != null)
+                path = HttpContext.Current.Server.MapPath("/App_Data/" + physicalName);
+            else
+            {
+                path = Path.Combine(Environment.CurrentDirectory, @"..\App_Data\" + physicalName);
+                System.IO.Directory.CreateDirectory(path);
+            }
 
             return existingOrNew(path);
 
