@@ -13,43 +13,29 @@ namespace FnX
     {
         public PersistentDictionary<string, string> Dictionary { get; set; }
 
-        public class EsentJsonStoreOptions
+        public class StoreOptions
         {
-            //public Func<T, string> GetId { get; set; }
-            //public Func<string> NewId { get; set; }
             public bool WithRevisions { get; set; }
             public bool WithTimeStamps { get; set; }
             
             public string DeserializeIdTo { get; set; }
             public string DeserializeUpdateTo { get; set; }
 
-            public EsentJsonStoreOptions()
+            public StoreOptions()
             {
-                //SetNewId = new Func<T, string>(t => new Guid().ToString());
-                //NewId = new Func<string>(() =>
-                //{
-                //    return Guid.NewGuid().ToString().Replace("-", "");
-                //});
-                //GetId = new Func<T, string>(t =>
-                //{
-                //    var id = t.GetType().GetProperty("Id").GetValue(t);
-                //    if (id == null) return "";
-                //    return id.ToString();
-                //});
                 WithRevisions = true;
                 WithTimeStamps = true;
-
                 DeserializeIdTo = "Id";
                 DeserializeUpdateTo = "UpdateDate";
             }
         }
-        public EsentJsonStoreOptions Options { get; set; }
+        public StoreOptions Options { get; set; }
 
         public PersistentDictionary<string, string> KeysDictionary { get; set; }
-        public EsentJsonStore(PersistentDictionary<string, string> dictionary, EsentJsonStoreOptions options)
+        public EsentJsonStore(PersistentDictionary<string, string> dictionary, StoreOptions options)
         {
             Dictionary = dictionary;
-            if (options == null) options = new EsentJsonStoreOptions();
+            if (options == null) options = new StoreOptions();
             Options = options;
 
         }
@@ -174,20 +160,11 @@ namespace FnX
         }
 
 
-        public void Dispose()
-        {
-            // 
-        }
-
         public object GetAll()
         {
             throw new NotImplementedException();
         }
 
-        //public Dictionary<string,string> All()
-        //{
-        //    return Dictionary.Where(t => !t.Key.Contains("-")).ToDictionary(t => t.Key, v => v.Value);
-        //}
         public string All()
         {
             return "[" + String.Join(",",Dictionary.Where(t => !t.Key.Contains("-")).Select(t=>t.Value)) + "]";
@@ -196,6 +173,11 @@ namespace FnX
         {
             return Dictionary.Where(t => !t.Key.Contains("-")).ToDictionary(t => t.Key, t => Deserialize<T>(t.Value));
         }
+        public void Dispose()
+        {
+            // 
+        }
+
     }
 
 }

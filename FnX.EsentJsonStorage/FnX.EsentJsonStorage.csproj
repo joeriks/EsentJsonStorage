@@ -7,8 +7,8 @@
     <ProjectGuid>{C050827A-0126-4CAF-9AA6-AC3B34702069}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FnX.EsentObject</RootNamespace>
-    <AssemblyName>FnX.EsentObject</AssemblyName>
+    <RootNamespace>FnX</RootNamespace>
+    <AssemblyName>FnX.EsentJsonStorage</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -52,7 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EsentJsonStore.cs" />
-    <Compile Include="EsentKeyValue.cs" />
+    <Compile Include="EsentJsonStorage.cs" />
+    <Compile Include="PersistentDictionaryExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -10,7 +10,7 @@ namespace FnX.EsentObjectTests
         [TestMethod]
         public void ExportImportTest()
         {
-            var p = EsentKeyValue.GetDictionary();
+            var p = EsentJsonStorage.GetDictionary();
 
             p.Clear();
             p.Add("foo", "bar");
@@ -44,7 +44,7 @@ namespace FnX.EsentObjectTests
             var item1 = new SomeType { Id = "1", Value = "A", Values = new List<string> { "aaa", "bbb", "ccc" } };
             var item2 = new SomeType { Id = "2", Value = "B", Values = new List<string> { "ddd", "eee", "fff" } };
 
-            var store = EsentKeyValue.GetStore();
+            var store = EsentJsonStorage.GetStore();
 
             store.Dictionary.Clear();
             store.Set(item1);

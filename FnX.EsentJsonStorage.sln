@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FnX.EsentObject", "FnX.EsentObject\FnX.EsentObject.csproj", "{C050827A-0126-4CAF-9AA6-AC3B34702069}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FnX.EsentJsonStorage", "FnX.EsentJsonStorage\FnX.EsentJsonStorage.csproj", "{C050827A-0126-4CAF-9AA6-AC3B34702069}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FnX.EsentObject.Tests", "FnX.EsentObject.Tests\FnX.EsentObject.Tests.csproj", "{6AC21557-215D-480D-9A47-9496D1172F79}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FnX.EsentJsonStorage.Tests", "FnX.EsentJsonStorage.Tests\FnX.EsentJsonStorage.Tests.csproj", "{6AC21557-215D-480D-9A47-9496D1172F79}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

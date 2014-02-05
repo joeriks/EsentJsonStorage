@@ -16,7 +16,7 @@ namespace FnX.EsentObject.Tests
         [TestMethod]
         public void Gets_Id()
         {
-            var s = EsentKeyValue.GetStore();
+            var s = EsentJsonStorage.GetStore();
             var id = s.Set(new Person());
 
             Assert.IsTrue(id.Length > 8);
@@ -25,7 +25,7 @@ namespace FnX.EsentObject.Tests
         [TestMethod]
         public void Creates_Revision()
         {
-            var s = EsentKeyValue.GetStore();
+            var s = EsentJsonStorage.GetStore();
             s.Dictionary.Clear();
             var person = new Person();
             person.Name = "";
@@ -44,7 +44,7 @@ namespace FnX.EsentObject.Tests
         [TestMethod]
         public void Creates_Revision_Use_DeserializeId()
         {
-            var s = EsentKeyValue.GetStore();
+            var s = EsentJsonStorage.GetStore();
             s.Dictionary.Clear();
             var person = new Person();
             person.Name = "";
@@ -63,7 +63,7 @@ namespace FnX.EsentObject.Tests
         [TestMethod]
         public void GetAll()
         {
-            var s = EsentKeyValue.GetStore();
+            var s = EsentJsonStorage.GetStore();
             s.Dictionary.Clear();
 
             s.Set(new Person { Name = "Foo" });
@@ -78,7 +78,7 @@ namespace FnX.EsentObject.Tests
         [TestMethod]
         public void GetAllAsJson()
         {
-            var s = EsentKeyValue.GetStore();
+            var s = EsentJsonStorage.GetStore();
             s.Dictionary.Clear();
 
             s.Set(new Person { Name = "Foo" });
@@ -96,7 +96,7 @@ namespace FnX.EsentObject.Tests
         [TestMethod]
         public void GetAll_NotRevisions()
         {
-            using (var s = EsentKeyValue.GetStore())
+            using (var s = EsentJsonStorage.GetStore())
             {
                 s.Dictionary.Clear();
 
