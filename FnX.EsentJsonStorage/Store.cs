@@ -108,6 +108,13 @@ namespace EsentJsonStorage
             if (Dictionary.ContainsKey(id)) return Dictionary[id];
             return null;
         }
+        public string GetValue(string id, int revision = 0)
+        {
+            if (revision != 0) id = id + "-" + revision.ToString();
+            if (Dictionary.ContainsKey(id)) return Strip(JObject.Parse(Dictionary[id]));
+            return null;
+        }
+
         public T Get<T>(string id, int revision = 0)
         {
             var result = Get(id, revision);
@@ -132,8 +139,8 @@ namespace EsentJsonStorage
                         var rev = (existingItem["_rev"] == null) ? "" : existingItem["_rev"].ToString();
                         int.TryParse(rev, out revision);
 
-                        Dictionary[id + "-" + revision] = existingItem.ToString();                        
-                        json["_rev"] = revision+1;
+                        Dictionary[id + "-" + revision] = existingItem.ToString();
+                        json["_rev"] = revision + 1;
                     }
                     else
                     {
@@ -171,23 +178,25 @@ namespace EsentJsonStorage
                 return newValue;
             }
         }
-
-        public string GetAll(bool excludeSystemProperties = false)
+        public string Strip(JObject jObject)
         {
-            if (excludeSystemProperties)
-                return "[" + String.Join(",", Dictionary.Where(t => !t.Key.Contains("-")).Select(t => {
-                    var jObject = JObject.Parse(t.Value);
-                    if (jObject["_val"] != null) return jObject["_val"].ToString();
+            if (jObject["_val"] != null) return jObject["_val"].ToString();
 
-                    jObject.Remove("_id");
-                    jObject.Remove("_date");
-                    jObject.Remove("_rev");
+            jObject.Remove("_id");
+            jObject.Remove("_date");
+            jObject.Remove("_rev");
+            return jObject.ToString();
 
-                    return jObject.ToString();
-                
-                })) + "]";
-            else
-                return "[" + String.Join(",", Dictionary.Where(t => !t.Key.Contains("-")).Select(t => t.Value)) + "]";
+        }
+        public string GetAllValues()
+        {
+            return "[" + String.Join(",", Dictionary.Where(t => !t.Key.Contains("-"))
+                .Select(t => Strip(JObject.Parse(t.Value))
+            )) + "]";
+        }
+        public string GetAll()
+        {
+            return "[" + String.Join(",", Dictionary.Where(t => !t.Key.Contains("-")).Select(t => t.Value)) + "]";
         }
         public Dictionary<string, T> GetAll<T>()
         {
