@@ -20,6 +20,7 @@ namespace EsentJsonStorage
 
             public string DeserializeIdTo { get; set; }
             public string DeserializeUpdateTo { get; set; }
+            public bool FlushOnDispose { get; set; }
 
             public StoreOptions()
             {
@@ -27,6 +28,7 @@ namespace EsentJsonStorage
                 WithTimeStamps = true;
                 DeserializeIdTo = "Id";
                 DeserializeUpdateTo = "UpdateDate";
+                FlushOnDispose = true;
             }
         }
         public StoreOptions Options { get; set; }
@@ -193,7 +195,7 @@ namespace EsentJsonStorage
         }
         public void Dispose()
         {
-            // 
+            Dictionary.Flush();
         }
 
     }
