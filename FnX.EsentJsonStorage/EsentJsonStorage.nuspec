@@ -6,11 +6,11 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <projectUrl>https://github.com/joeriks/FnX.EsentObject</projectUrl>
+    <projectUrl>https://github.com/joeriks/EsentJsonStorage</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Initial commit.</releaseNotes>
+    <releaseNotes>Prerelease</releaseNotes>
     <copyright>Copyright 2014</copyright>
-    <tags>Esent</tags>
+    <tags>Esent Json</tags>
   </metadata>
 </package>
