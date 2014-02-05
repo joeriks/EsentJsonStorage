@@ -44,7 +44,7 @@ namespace FnX.EsentObjectTests
             var item1 = new SomeType { Id = "1", Value = "A", Values = new List<string> { "aaa", "bbb", "ccc" } };
             var item2 = new SomeType { Id = "2", Value = "B", Values = new List<string> { "ddd", "eee", "fff" } };
 
-            var store = EsentKeyValue.GetStore<SomeType>(t => t.Id);
+            var store = EsentKeyValue.GetStore<SomeType>();
 
             store.Dictionary.Clear();
             store.Set(item1);
