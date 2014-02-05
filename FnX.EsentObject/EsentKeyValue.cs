@@ -21,12 +21,13 @@ namespace FnX
         {
             public Func<T, string> GetId { get; set; }
             public Func<string> NewId { get; set; }
+            public bool WithRevisions { get; set; }
             public EsentTypedStoreOptions()
             {
                 //SetNewId = new Func<T, string>(t => new Guid().ToString());
                 NewId = new Func<string>(() =>
                 {
-                    return new Guid().ToString().Replace("-", "");
+                    return Guid.NewGuid().ToString().Replace("-", "");
                 });
                 GetId = new Func<T, string>(t =>
                 {
@@ -34,7 +35,7 @@ namespace FnX
                     if (id == null) return "";
                     return id.ToString();
                 });
-
+                WithRevisions = true;
 
             }
         }
@@ -64,11 +65,11 @@ namespace FnX
         {
             var id = Options.GetId(value);
             if (string.IsNullOrEmpty(id)) id = Options.NewId();
-            if (Dictionary.ContainsKey(id))
+            if (Options.WithRevisions && Dictionary.ContainsKey(id))
             {
                 var revision = 1;
                 while (Dictionary.ContainsKey(id + "-" + revision)) revision += 1;
-                Set(id + "-" + revision, value);
+                Set(id + "-" + revision, Get(id));
             }
             Set(id, value);
             return id;
