@@ -18,6 +18,7 @@ namespace FnX.EsentObject.Tests
 
             Assert.IsTrue(id.Length > 8);
         }
+
         [TestMethod]
         public void Creates_Revision()
         {

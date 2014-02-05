@@ -13,105 +13,25 @@ using System.Web;
 namespace FnX
 {
 
-    public class EsentTypedStore<T> : IDisposable
-    {
-        public PersistentDictionary<string, string> Dictionary { get; set; }
-
-        public class EsentTypedStoreOptions
-        {
-            public Func<T, string> GetId { get; set; }
-            public Func<string> NewId { get; set; }
-            public bool WithRevisions { get; set; }
-            public EsentTypedStoreOptions()
-            {
-                //SetNewId = new Func<T, string>(t => new Guid().ToString());
-                NewId = new Func<string>(() =>
-                {
-                    return Guid.NewGuid().ToString().Replace("-", "");
-                });
-                GetId = new Func<T, string>(t =>
-                {
-                    var id = t.GetType().GetProperty("Id").GetValue(t);
-                    if (id == null) return "";
-                    return id.ToString();
-                });
-                WithRevisions = true;
-
-            }
-        }
-        public EsentTypedStoreOptions Options { get; set; }
-
-        public PersistentDictionary<string, string> KeysDictionary { get; set; }
-        public EsentTypedStore(PersistentDictionary<string, string> dictionary, EsentTypedStoreOptions options)
-        {
-            Dictionary = dictionary;
-            //KeysDictionary = new PersistentDictionary<string, string>("keys");
-            //GetId = options.GetId;
-            if (options == null) options = new EsentTypedStoreOptions();
-            Options = options;
-
-        }
-        public T Get(string key)
-        {
-            if (Dictionary.ContainsKey(key)) return JsonConvert.DeserializeObject<T>(Dictionary[key]);
-            return default(T);
-        }
-        public T Get<T>(string key)
-        {
-            if (Dictionary.ContainsKey(key)) return JsonConvert.DeserializeObject<T>(Dictionary[key]);
-            return default(T);
-        }
-        public string Set(T value)
-        {
-            var id = Options.GetId(value);
-            if (string.IsNullOrEmpty(id)) id = Options.NewId();
-            if (Options.WithRevisions && Dictionary.ContainsKey(id))
-            {
-                var revision = 1;
-                while (Dictionary.ContainsKey(id + "-" + revision)) revision += 1;
-                Set(id + "-" + revision, Get(id));
-            }
-            Set(id, value);
-            return id;
-        }
-        public T Do(string key, Func<T, T> func)
-        {
-            lock (Dictionary)
-            {
-                var originalValue = Get<T>(key);
-                var newValue = func(originalValue);
-                Set(key, newValue);
-                return newValue;
-            }
-        }
-        public void Set<T>(string key, T value)
-        {
-            lock (Dictionary)
-            {
-                Dictionary[key] = JsonConvert.SerializeObject(value);
-            }
-        }
-
-        public void Dispose()
-        {
-            // 
-        }
-    }
     public static class EsentKeyValueExtensions
     {
-        public static EsentTypedStore<T> GetStore<T>(this PersistentDictionary<string, string> self, EsentTypedStore<T>.EsentTypedStoreOptions options)
+        //public static EsentTypedStore<T> GetStore<T>(this PersistentDictionary<string, string> self, EsentTypedStore<T>.EsentTypedStoreOptions options)
+        //{
+        //    return new EsentTypedStore<T>(self, options);
+        //}
+        public static EsentJsonStore GetStore(this PersistentDictionary<string, string> self, EsentJsonStore.EsentJsonStoreOptions options)
         {
-            return new EsentTypedStore<T>(self, options);
+            return new EsentJsonStore(self, options);
         }
-        public static T Get<T>(this PersistentDictionary<string, string> self, string key)
-        {
-            if (self.ContainsKey(key)) return JsonConvert.DeserializeObject<T>(self[key]);
-            return default(T);
-        }
-        public static void Set(this PersistentDictionary<string, string> self, string key, object value)
-        {
-            self[key] = JsonConvert.SerializeObject(value);
-        }
+        //public static T Get<T>(this PersistentDictionary<string, string> self, string key)
+        //{
+        //    if (self.ContainsKey(key)) return JsonConvert.DeserializeObject<T>(self[key]);
+        //    return default(T);
+        //}
+        //public static void Set(this PersistentDictionary<string, string> self, string key, object value)
+        //{
+        //    self[key] = JsonConvert.SerializeObject(value);
+        //}
 
         public static void Export(this PersistentDictionary<string, string> self, string path)
         {
@@ -130,20 +50,20 @@ namespace FnX
     public class EsentKeyValue
     {
 
-        public static EsentTypedStore<string> GetStore(string physicalName = "")
+        public static EsentJsonStore GetStore(string physicalName = "", EsentJsonStore.EsentJsonStoreOptions options = null)
         {
-            return GetStore<string>(physicalName);
+            if (physicalName == "") physicalName = "default";
+            return GetDictionary(physicalName).GetStore(options);
         }
-
-        public static EsentTypedStore<T> GetStore<T>(EsentTypedStore<T>.EsentTypedStoreOptions options)
-        {
-            return GetStore<T>("", options);
-        }
-        public static EsentTypedStore<T> GetStore<T>(string physicalName = "", EsentTypedStore<T>.EsentTypedStoreOptions options = null)
-        {
-            if (physicalName == "") physicalName = typeof(T).Name;
-            return GetDictionary(physicalName).GetStore<T>(options);
-        }
+        //public static EsentTypedStore<T> GetStore<T>(EsentTypedStore<T>.EsentTypedStoreOptions options)
+        //{
+        //    return GetStore<T>("", options);
+        //}
+        //public static EsentTypedStore<T> GetStore<T>(string physicalName = "", EsentTypedStore<T>.EsentTypedStoreOptions options = null)
+        //{
+        //    if (physicalName == "") physicalName = typeof(T).Name;
+        //    return GetDictionary(physicalName).GetStore<T>(options);
+        //}
         public static ConcurrentDictionary<string, PersistentDictionary<string, string>> _dictionaries = new ConcurrentDictionary<string, PersistentDictionary<string, string>>();
         public static PersistentDictionary<string, string> GetDictionary(string physicalName = "default")
         {
@@ -175,40 +95,40 @@ namespace FnX
             }
         }
 
-        public static string Get(string key)
-        {
-            return Get<string>("String", key);
-        }
-        public static string Get(string physicalName, string key)
-        {
-            return Get<string>(physicalName, key);
-        }
+        //public static string Get(string key)
+        //{
+        //    return Get<string>("String", key);
+        //}
+        //public static string Get(string physicalName, string key)
+        //{
+        //    return Get<string>(physicalName, key);
+        //}
 
-        public static T Get<T>(string key)
-        {
-            return Get<T>(typeof(T).Name, key);
-        }
+        //public static T Get<T>(string key)
+        //{
+        //    return Get<T>(typeof(T).Name, key);
+        //}
 
-        public static T Get<T>(string physicalName, string key)
-        {
-            var pd = GetDictionary(physicalName);
+        //public static T Get<T>(string physicalName, string key)
+        //{
+        //    var pd = GetDictionary(physicalName);
 
-            if (pd.ContainsKey(key)) return JsonConvert.DeserializeObject<T>(pd[key]);
-            return default(T);
+        //    if (pd.ContainsKey(key)) return JsonConvert.DeserializeObject<T>(pd[key]);
+        //    return default(T);
 
-        }
+        //}
 
-        public static void Set<T>(string key, T value)
-        {
-            Set<T>(typeof(T).Name, key, value);
-        }
+        //public static void Set<T>(string key, T value)
+        //{
+        //    Set<T>(typeof(T).Name, key, value);
+        //}
 
-        public static void Set<T>(string physicalName, string key, T value)
-        {
-            var pd = GetDictionary(physicalName);
+        //public static void Set<T>(string physicalName, string key, T value)
+        //{
+        //    var pd = GetDictionary(physicalName);
 
-            pd[key] = JsonConvert.SerializeObject(value);
-        }
+        //    pd[key] = JsonConvert.SerializeObject(value);
+        //}
 
 
     }
